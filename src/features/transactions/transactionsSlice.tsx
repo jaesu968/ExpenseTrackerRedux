@@ -1,4 +1,5 @@
 import { AnyAction } from "redux";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface Transaction {
   category: string;
@@ -29,6 +30,15 @@ export const CATEGORIES = [
 const initialState: TransactionsState = Object.fromEntries(
   CATEGORIES.map((category) => [category, []])
 );
+
+// define a slice with createSlice function 
+const transactionsSlice = createSlice({
+  name: 'transactions',
+  initialState: initialState,
+  reducers: {
+    
+  }
+})
 
 export const addTransaction = (transaction: Transaction) => {
   return {
