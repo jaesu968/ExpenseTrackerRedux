@@ -1,72 +1,79 @@
-# vite-template-redux
+# React & Redux Expense Tracker
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+This project is a budgeting and expense tracking application built with React and Redux Toolkit. It serves as a practical example for understanding modern state management in a React application. The app allows users to set budgets for various categories (like food and transportation), add transactions, and see how much money remains in each budget.
 
-```sh
-npx tiged reduxjs/redux-templates/packages/vite-template-redux my-app
-```
+## Core Concepts & Technologies
 
-## Goals
+This project demonstrates several key concepts essential for modern web development.
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+### 1. React: Component-Based UI
 
-## Scripts
+The user interface is built with [React](https://react.dev/), a library for building user interfaces. The app is broken down into small, reusable pieces called **components**.
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+-   **`App.tsx`**: The root component that assembles the main layout of the application.
+-   **`Budgets.tsx`**: Displays a list of all budget categories.
+-   **`Budget.tsx`**: A single budget item, showing the category name, the budgeted amount, and the remaining funds. It also allows the user to edit the budget amount.
+-   **`Transactions.tsx`**: A feature component that displays the transaction list and the form for adding new transactions.
+-   **`TransactionList.tsx`**: Renders a list of all transactions.
+-   **`Transaction.tsx`**: Represents a single transaction item, showing its description, amount, and a button to delete it.
+-   **`TransactionForm.tsx`**: A form for users to add new transactions, including selecting a category, adding a description, and specifying an amount.
 
-## Inspiration
+### 2. Vite: Modern Build Tool
 
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+This project uses Vite as its build tool and development server. Vite offers a significantly faster development experience compared to older tools like Create React App, thanks to its native ES module support.
 
-# Codecademy Project: Expense Tracker 
-This project—a budgeting and expense tracking app—allows you to practice refactoring with Redux Toolkit. The app allows you to set budgets for various categories, such as food and transportation, and track transactions in those categories. It then sums your spending in each category to calculate the amount of money that remains to be spent.
+### 3. Redux Toolkit: State Management
 
-To help you to understand how the data of the application works, consider an example of the Redux store’s state:
-{
-  budgets: [ 
-    { category: 'housing', amount: 400 },
-    { category: 'food', amount: 100 },
-    ...
-  ],
-  transactions: {
-    housing: [ 
-      { 
-        category: 'housing', 
-        description: 'rent', 
-        amount: 400, 
-        id: 123 
-      }
-    ],
-    food: [ 
-      { 
-        category: 'food', 
-        description: 'groceries on 1/12/2021', 
-        amount: 50, 
-        id: 456 
-      },
-      { 
-        category: 'food', 
-        description: 'dinner on 1/16/2021', 
-        amount: 12, 
-        id: 789 
-      },
-    ]
-  }
+The application's state (all budgets and transactions) is managed by Redux Toolkit, the recommended way to write Redux logic.
 
+#### The Store: Single Source of Truth
 
-}
+All application state is held in a single object tree inside a single **store**. The only way to change the state is to dispatch an **action**, an object describing what happened.
 
-You will work primarily in budgetsSlice.js and transactionsSlice.js where reducers and action creators are currently programmed by hand. Your task will be to refactor this project using a slice-based approach to produce the app’s actions and reducers.
+-   **`app/store.ts`**: This is where the Redux store is configured using `configureStore`. It combines the different reducers from our "slices" into one main reducer for the app.
 
-Before you get started, spend some time using the app in its current implementation to ensure you understand how it’s supposed to work. Set a budget of $300 for food, create a $20 food transaction, and then check the food budget again to see how much you have left to spend. As you progress through the project, take note of the ways that Redux Toolkit simplifies your code.
+#### Slices (`createSlice`)
 
+We use the "slice" pattern to organize our Redux logic. A slice represents a portion of the Redux state and contains the reducer logic and action creators for that piece of state.
 
+-   **`features/budgets/budgetsSlice.tsx`**: Manages the `budgets` array in the state. It handles actions like `editBudget`.
+-   **`features/transactions/transactionsSlice.tsx`**: Manages the `transactions` object. It handles adding (`addTransaction`) and removing (`deleteTransaction`) transactions. The `createSlice` function automatically generates action creators and action types, which greatly reduces boilerplate code.
 
+#### Reading State with `useSelector`
+
+React components can "read" data from the store using the `useSelector` hook from React-Redux.
+
+-   In **`Budget.tsx`**, `useSelector(selectTransactions)` is used to get all transactions to calculate the expenses for a specific budget category.
+-   In **`Transactions.tsx`**, `useSelector(selectFlattenedTransactions)` gets a flattened list of all transactions to display.
+
+#### Dispatching Actions with `useDispatch`
+
+When a user interacts with the app (like adding or deleting a transaction), components dispatch actions to the store using the `useDispatch` hook.
+
+-   In **`TransactionForm.tsx`**, submitting the form dispatches the `addTransaction` action with the form data as its payload.
+-   In **`Transaction.tsx`**, clicking the 'X' button dispatches the `deleteTransaction` action to remove that specific transaction.
+
+### 4. TypeScript
+
+The project is written in TypeScript, which adds static types to JavaScript. This helps catch errors during development and improves code quality and maintainability by providing clear definitions for the shape of our data, such as the `Transaction` and `Budget` types.
+
+### 5. Testing
+
+The project is set up for testing with Vitest and React Testing Library.
+
+-   **`utils/test-utils.tsx`**: Contains a custom `renderWithProviders` function. This is a testing utility that wraps components with the Redux `<Provider>` so they can be tested in isolation while still being connected to a Redux store.
+
+## How the Data Flows
+
+1.  **Initial State**: The Redux store is initialized with a predefined structure for `budgets` and `transactions`.
+2.  **Render**: React components render the UI based on the current state from the Redux store, which they access using `useSelector`.
+3.  **User Interaction**: A user fills out the "New Transaction" form and clicks "Add Transaction".
+4.  **Dispatch Action**: The `onSubmit` handler in `TransactionForm.tsx` calls `dispatch(addTransaction({ ... }))`.
+5.  **Reducer Logic**: The `transactionsSlice` reducer receives the action and updates the state by adding the new transaction to the correct category.
+6.  **Re-render**: Redux notifies the React components that the state has changed. Any component subscribed to that piece of state (like `Transactions.tsx` and `Budget.tsx`) re-renders to display the updated information.
+
+## Available Scripts
+
+-   **`npm run dev`**: Starts the development server.
+-   **`npm run build`**: Creates a production-ready build of the app.
+-   **`npm run test`**: Runs the test suite.
