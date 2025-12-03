@@ -36,7 +36,27 @@ const transactionsSlice = createSlice({
   name: 'transactions',
   initialState: initialState,
   reducers: {
-    
+    // addTransaction action creator/reducer pair 
+    // add a new transaction object (action.payload) to the correct 
+    // category's transaction list in the transactions state object 
+    addTransaction: (state, action) => {
+      // find category in 'state' that matches the category property of action payload
+      let category = state[action.payload.category]
+      // add the new transation to that category's transaction array 
+      category.push(action.payload)
+    },
+    // deleteTransaction action creator/reducer pair 
+    // two arguments: state and action 
+    // it should delete the old transaction (action.payload) from 
+    // the correct category's transaction list in the transactions state object 
+    deleteTransaction: (state, action) => {
+      // find category in 'state' that matches the category property of action payload
+      let category = state[action.payload.category]
+      // filter out the old transaction from that category's transaction array 
+      // and reassign the filtered array directly to state[action.payload.category]
+      state[action.payload.category] = category.filter(transaction => transaction.id != action.payload.id)
+      
+    }
   }
 })
 
