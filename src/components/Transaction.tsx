@@ -1,11 +1,14 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTransaction } from '../features/transactions/transactionsSlice';
+import { deleteTransaction, type Transaction } from '../features/transactions/transactionsSlice';
 
-export default function Transaction({ transaction }) {
+interface TransactionProps {
+  transaction: Transaction;
+}
+
+export default function Transaction({ transaction }: TransactionProps) {
   const dispatch = useDispatch();
 
-  const handleDelete = (e) => {
+  const handleDelete = () => {
     dispatch(deleteTransaction(transaction));
   };
 

@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { editBudget } from '../features/budgets/budgetsSlice';
 import { selectTransactions } from '../features/transactions/transactionsSlice';
 
-export default function Budget({ budget }) {
+interface BudgetData {
+  category: string;
+  amount: number;
+}
+
+interface BudgetProps {
+  budget: BudgetData;
+}
+
+export default function Budget({ budget }: BudgetProps) {
   const dispatch = useDispatch();
-  const [amount, setAmount] = useState(budget.amount);
+  const [amount, setAmount] = useState(String(budget.amount));
   const transactions = useSelector(selectTransactions);
 
-  const handleEdit = (e) => {
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(editBudget({ category: budget.category, amount: amount }));
+    dispatch(editBudget({ category: budget.category, amount: parseFloat(amount) }));
   };
 
   const calculateTotalExpenses = () => {
@@ -19,7 +28,7 @@ export default function Budget({ budget }) {
       .reduce((amount1, amount2) => amount1 + amount2, 0);
   };
 
-  const getFundsRemainingClassName = (amount) => {
+  const getFundsRemainingClassName = (amount: string) => {
     if (parseFloat(amount) === 0) {
       return null;
     }
@@ -27,7 +36,7 @@ export default function Budget({ budget }) {
     return parseFloat(amount) > 0 ? 'positive' : 'negative';
   };
 
-  const remainingFunds = Number.parseFloat(budget.amount - calculateTotalExpenses()).toFixed(2);
+  const remainingFunds = String(Number(budget.amount - calculateTotalExpenses()).toFixed(2));
   const fundsRemainingClassName = getFundsRemainingClassName(remainingFunds);
 
   return (

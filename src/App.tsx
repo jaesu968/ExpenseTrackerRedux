@@ -1,6 +1,5 @@
 import Transactions from './features/transactions/Transactions';
 import Budgets from './features/budgets/Budgets';
-import React from 'react';
 
 function App() {
   return (

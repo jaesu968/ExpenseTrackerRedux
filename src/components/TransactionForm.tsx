@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   addTransaction,
@@ -6,13 +6,13 @@ import {
 } from '../features/transactions/transactionsSlice';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function TransactionForm({ categories }) {
+export default function TransactionForm() {
   const dispatch = useDispatch();
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('0');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(
       addTransaction({
@@ -24,7 +24,7 @@ export default function TransactionForm({ categories }) {
     );
     setCategory(CATEGORIES[0]);
     setDescription('');
-    setAmount(0);
+    setAmount('0');
   };
 
   return (

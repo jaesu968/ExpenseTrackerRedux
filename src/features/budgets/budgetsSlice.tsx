@@ -46,5 +46,6 @@ const budgetsSlice = createSlice({
   }
 )
 
-export const {editBudget} = budgetsSlice.actions;
+export const { editBudget } = budgetsSlice.actions;
+export const selectBudgets = (state: { budgets: typeof initialState }) => state.budgets;
 export default budgetsSlice.reducer;
